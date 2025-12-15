@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ABD Surgical Product Catalogue</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f7f7f7;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .catalogue {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .product {
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .product:hover {
+      transform: translateY(-5px);
+    }
+
+    .product img {
+      width: 200px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .product h3 {
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: #222;
+    }
+
+    .product p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 6px 12px;
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background: #2980b9;
+    }
+
+    #cartSection {
+      margin-top: 30px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    #cartList li {
+      margin: 5px 0;
+      width: 440px;
+    }
+
+    .qty-btn {
+      padding: 2px 6px;
+      margin: 0 4px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .qty-btn:hover {
+      background: #ddd;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>ABD Surgical Product Catalogue</h1>
+
+  <!-- Filters -->
+  <div class="filters">
+    <select id="brandFilter">
+      <option value="all">All Brands</option>
+      <option value="Certeza">Certeza</option>
+      <option value="Smile">Smile</option>
+      <option value="U Check">U Check</option>
+      <option value="Medi Plus">Medi Plus</option>
+      <option value="Atom">Atom</option>
+      <option value="Accu Check">Accu Check</option>
+      <option value="Orbit">Orbit</option>
+      <option value="CC">CC</option>
+      <option value="Oncall">Oncall</option>
+      <option value="Gluco Lab">Gluco Lab</option>
+      <option value="Easy Gluco">Easy Gluco</option>
+      <option value="Life Check">Life Check</option>
+      <option value="Medicare">Medicare</option>
+      <option value="Medisign">Medisign</option>
+      <option value="CareCheck">CareCheck</option>
+    </select>
+
+    <select id="categoryFilter">
+      <option value="all">All Categories</option>
+      <option value="GlucoMeter">GlucoMeter</option>
+      <option value="Strips">Strips</option>
+      <option value="Syringe">Syringe</option>
+      <option value="Nebulizer">Nebulizer</option>
+      <option value="Nebulizer Masks">Nebulizer Masks</option>
+      <option value="BpMeter">BpMeter</option>
+      <option value="Drips">Drips</option>
+    </select>
+  </div>
+
+  <!-- Product Catalogue -->
+  <div class="catalogue" id="catalogue"></div>
+
+  <!-- Cart Section -->
+  <div id="cartSection">
+    <h2>🛒 Your Cart</h2>
+    <ul id="cartList"></ul>
+    <p><strong>Total Products: </strong><span id="totalProducts">0</span></p>
+    <input type="text" id="customerName" placeholder="Enter your name"
+      style="padding:8px; margin-top:10px; width:100%; border:1px solid #ccc; border-radius:6px;">
+    <button class="btn" onclick="sendToWhatsApp()">Send Order to WhatsApp</button>
+  </div>
+
+  <script>
+    const products = [
+      { id: 1, name: "3CC Syringe", brand: "Smile", category: "Syringe", img: "syringe.jpeg" },
+      { id: 2, name: "5CC Syringe", brand: "Smile", category: "Syringe", img: "syringe.jpeg" },
+      { id: 3, name: "10cc Syringe", brand: "Smile", category: "Syringe", img: "syringe.jpeg" },
+      { id: 4, name: "Gl110 Meter", brand: "Certeza", category: "GlucoMeter", img: "glucoMeter.png" },
+      { id: 5, name: "Gl110 Strips", brand: "Certeza", category: "Strips", img: "strip.jpeg" },
+      { id: 6, name: "Gl100 Strips", brand: "Certeza", category: "Strips", img: "strip.jpeg" },
+      { id: 7, name: "U Check Nebulizer", brand: "U Check", category: "Nebulizer", img: "Nebulizer.jpeg" },
+      { id: 8, name: "U Check Strips", brand: "U Check", category: "Strips", img: "strip.jpeg" },
+      { id: 9, name: "U Check ", brand: "U Check", category: "GlucoMeter", img: "glucoMeter.png" },
+      { id: 10, name: "Nebulizer Mask Adult", brand: "Medi Plus", category: "Nebulizer Masks", img: "NebulizerMask.jpeg" },
+      { id: 11, name: "Nebulizer Mask Child", brand: "Medi Plus", category: "Nebulizer Masks", img: "NebulizerMask.jpeg" },
+      { id: 12, name: "Nebulizer Mask Adult", brand: "Medi Plus", category: "Nebulizer Masks", img: "NebulizerMask.jpeg" },
+      { id: 13, name: "Atom Meter", brand: "Atom", category: "GlucoMeter", img: "glucoMeter.png" },
+      { id: 14, name: "Atom Strips", brand: "Atom", category: "Strips", img: "strip.jpeg" },
+      { id: 15, name: "Accu Check Meter Instant S", brand: "Accu Check", category: "GlucoMeter", img: "glucoMeter.png" },
+      { id: 16, name: "Accu Check Meter Instant", brand: "Accu Check", category: "GlucoMeter", img: "glucoMeter.png" },
+      { id: 17, name: "Accu Check Meter Active", brand: "Accu Check", category: "GlucoMeter", img: "glucoMeter.png" },
+      { id: 18, name: "Orbit Strips", brand: "Orbit", category: "Strips", img: "strip.jpeg" },
+      { id: 19, name: "Accu check Instant Strips", brand: "Accu Check", category: "Strips", img: "strip.jpeg" },
+      { id: 20, name: "Accu check Active Strips", brand: "Accu Check", category: "Strips", img: "strip.jpeg" },
+      { id: 21, name: "Accu check Performa Strips", brand: "Accu Check", category: "Strips", img: "strip.jpeg" },
+      { id: 22, name: "Life Check Strips", brand: "Life Check", category: "Strips", img: "strip.jpeg" },
+      { id: 23, name: "Easy Gluco UltraPlus  Strips", brand: "Easy Gluco", category: "Strips", img: "strip.jpeg" },
+      { id: 24, name: "Gluco Lab Strips", brand: "Gluco Lab", category: "Strips", img: "strip.jpeg" },
+      { id: 25, name: "CC Advance Strips", brand: "CC", category: "Strips", img: "strip.jpeg" },
+      { id: 26, name: "CC Advance Strips", brand: "CC", category: "Strips", img: "strip.jpeg" },
+      { id: 27, name: "CC fast Strips", brand: "CC", category: "Strips", img: "strip.jpeg" },
+      { id: 28, name: "CC 1362 Strips", brand: "CC", category: "Strips", img: "strip.jpeg" },
+      { id: 29, name: "Oncall Plus Strips", brand: "Oncall", category: "Strips", img: "strip.jpeg" },
+      { id: 29, name: "Oncall Extra Strips", brand: "Oncall", category: "Strips", img: "strip.jpeg" },
+      { id: 29, name: "Code Free Strips", brand: "Oncall", category: "Strips", img: "strip.jpeg" },
+      { id: 30, name: "NB600 Certeza Nebulizer", brand: "Certeza", category: "Nebulizer", img: "Nebulizer.jpeg" },
+      { id: 31, name: "NB603 Certeza Nebulizer", brand: "Certeza", category: "Nebulizer", img: "Nebulizer.jpeg" },
+      { id: 32, name: "NB605 Certeza Nebulizer", brand: "Certeza", category: "Nebulizer", img: "Nebulizer.jpeg" },
+      { id: 33, name: "NB607 Certeza Nebulizer", brand: "Certeza", category: "Nebulizer", img: "Nebulizer.jpeg" },
+      { id: 34, name: "NB608 Certeza Nebulizer", brand: "Certeza", category: "Nebulizer", img: "Nebulizer.jpeg" },
+      { id: 35, name: "Medicare Nebulizer", brand: "MediCare", category: "Nebulizer", img: "Nebulizer.jpeg" },
+      { id: 36, name: "Medisign Nebulizer", brand: "Medisign", category: "Nebulizer", img: "Nebulizer.jpeg" },
+      { id: 37, name: "AutoMyzer Nebulizer", brand: "", category: "Nebulizer", img: "Nebulizer.jpeg" },
+      { id: 38, name: "Medisign Strips", brand: "Medisign", category: "Strips", img: "strip.jpeg" },
+      { id: 39, name: "Medisign Meter", brand: "Medisign", category: "GlucoMeter", img: "glucoMeter.png" },
+      { id: 40, name: "BM300 Meter", brand: "Certeza", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 41, name: "BM307 Meter", brand: "Certeza", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 42, name: "BM400 Meter", brand: "Certeza", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 43, name: "BM404 Meter", brand: "Certeza", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 44, name: "BM405 Meter", brand: "Certeza", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 45, name: "BM408 Meter", brand: "Certeza", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 46, name: "BM444 Meter", brand: "Certeza", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 47, name: "BM450 Meter", brand: "Certeza", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 48, name: "BM470 Meter", brand: "Certeza", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 49, name: "CareCheck Meter", brand: "CareCheck", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 50, name: "BPM8E Meter", brand: "Medisign", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 51, name: "BPM36 Meter", brand: "Medisign", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 52, name: "BPM63 Meter", brand: "Medisign", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 53, name: "BPM307 Meter", brand: "Medisign", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 54, name: "BPM309 Meter", brand: "Medisign", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 55, name: "BPM804 Meter", brand: "Medisign", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 56, name: "BPM809 Meter", brand: "Medisign", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 57, name: "BPM830 Meter", brand: "Medisign", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 58, name: "BP Digital Apratus RossMax Meter", brand: "RossMax", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 59, name: "BP YE660F Digital YUWELL  Meter", brand: "YUWELL", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 60, name: "BP YE670CR Digital YUWELL  Meter", brand: "YUWELL", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 61, name: "BP YE680A Digital YUWELL  Meter", brand: "YUWELL", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 62, name: "BP YE690A Digital YUWELL  Meter", brand: "YUWELL", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 63, name: "BP YE698A Digital YUWELL  Meter", brand: "YUWELL", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 64, name: "BP YE720A Digital YUWELL  Meter", brand: "YUWELL", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 65, name: "BP YE830A Digital YUWELL  Meter", brand: "YUWELL", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 66, name: "BP YE880A Digital YUWELL  Meter", brand: "YUWELL", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 67, name: "BP YE890A Digital YUWELL  Meter", brand: "YUWELL", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 68, name: "BP Monitor HEM-7120 Omron Meter", brand: "Omron", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 69, name: "BP Monitor HEM-7130 Omron Meter", brand: "Omron", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 70, name: "BP Monitor HEM-7140 Omron Meter", brand: "Omron", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 71, name: "BP Monitor HEM-7156 Omron Meter", brand: "Omron", category: "BpMeter", img: "DigitalBpMeter.png" },
+      { id: 72, name: "BP Monitor HEM-7200 Omron Meter", brand: "Omron", category: "Bpmeter", img: "DigitalBpMeter.png" },
+      { id: 73, name: "Dexosline 1000ml", brand: "", category: "Drips", img: "drips.png" },
+      { id: 74, name: "5% 1000ml", brand: "", category: "Drips", img: "drips.png" },
+      { id: 75, name: "N/S 1000ml", brand: "N/S", category: "Drips", img: "drips.png" },
+      { id: 76, name: "5% D/W 1000ml Medisole", brand: "", category: "Drips", img: "drips.png" },
+      { id: 77, name: "R/L 1000ml Medisole", brand: "R/L", category: "Drips", img: "drips.png" },
+      { id: 78, name: "10% D/W 1000ml Medisole", brand: "", category: "Drips", img: "drips.png" },
+      { id: 79, name: "10% 1000ml", brand: "", category: "Drips", img: "drips.png" },
+      { id: 80, name: "N/S 9% 1000ml Medisole", brand: "N/S", category: "Drips", img: "drips.png" },
+      { id: 81, name: "R/L 1000ml", brand: "R/L", category: "Drips", img: "drips.png" },
+      { id: 82, name: "DISTAL WATER 1000ml", brand: "", category: "Drips", img: "drips.png" },
+      { id: 83, name: "5% 500ml", brand: "", category: "Drips", img: "drips.png" },
+      { id: 84, name: "Dexosline 500ml", brand: "", category: "Drips", img: "drips.png" },
+      { id: 85, name: "N/S 500ml", brand: "N/S", category: "Drips", img: "drips.png" },
+      { id: 86, name: "Dexosline 500ml Medisole", brand: "", category: "Drips", img: "drips.png" },
+      { id: 87, name: "10% D/W 500ml Medisole", brand: "", category: "Drips", img: "drips.png" },
+      { id: 88, name: "R/L 500ml Medisole", brand: "R/L", category: "Drips", img: "drips.png" },
+      { id: 89, name: "5% D/W 500ml Medisole", brand: "", category: "Drips", img: "drips.png" },
+      { id: 90, name: "N/S 9% 500ml Medisole", brand: "N/S", category: "Drips", img: "drips.png" },
+      { id: 91, name: "R/L 500ml", brand: "R/L", category: "Drips", img: "drips.png" },
+      { id: 92, name: "N/S 500ml", brand: "N/S", category: "Drips", img: "drips.png" },
+      { id: 93, name: "10% 500ml", brand: "", category: "Drips", img: "drips.png" },
+      { id: 94, name: "5% 500ml", brand: "", category: "Drips", img: "drips.png" },
+      { id: 95, name: "N/S 9% 100ml Medisole", brand: "N/S", category: "Drips", img: "drips.png" },
+      { id: 96, name: "N/S 100ml", brand: "N/S", category: "Drips", img: "drips.png" },
+      { id: 97, name: "N/S 100ml", brand: "N/S", category: "Drips", img: "drips.png" },
+
+    ];
+
+    let cart = [];
+    const catalogue = document.getElementById("catalogue");
+    const brandFilter = document.getElementById("brandFilter");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const cartList = document.getElementById("cartList");
+    const totalProducts = document.getElementById("totalProducts");
+
+    function renderProducts() {
+      const brandValue = brandFilter.value;
+      const categoryValue = categoryFilter.value;
+      catalogue.innerHTML = "";
+      const filteredProducts = products.filter(product =>
+        (brandValue === "all" || product.brand === brandValue) &&
+        (categoryValue === "all" || product.category === categoryValue)
+      );
+      if (filteredProducts.length === 0) {
+        catalogue.innerHTML = "<p style='grid-column: 1 / -1; text-align: center;'>No products found.</p>";
+      } else {
+        filteredProducts.forEach(product => {
+          const productCard = `
+            <div class="product">
+              <img src="${product.img}" alt="${product.name}">
+              <h3>${product.name}</h3>
+              <p>${product.brand} - ${product.category}</p>
+              <button class="btn" onclick="addToCart(${product.id})">Add to Cart</button>
+            </div>
+          `;
+          catalogue.innerHTML += productCard;
+        });
+      }
+    }
+
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      const existing = cart.find(item => item.id === id);
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push({ ...product, quantity: 1 });
+      }
+      renderCart();
+    }
+
+    function renderCart() {
+      cartList.innerHTML = "";
+      let totalCount = 0;
+      cart.forEach((item, index) => {
+        totalCount += item.quantity;
+        cartList.innerHTML += `
+          <li style="display: flex; justify-content: space-between; align-items: center;">
+            ${item.name} = ${item.quantity}
+            <div>
+            <button class="qty-btn" onclick="changeQty(${index}, -1)">➖</button>
+            <button class="qty-btn" onclick="changeQty(${index}, 1)">➕</button>
+            <button class="qty-btn" onclick="removeFromCart(${index})">❌</button>
+            </div>
+          </li>
+        `;
+      });
+      totalProducts.textContent = totalCount;
+    }
+
+    function changeQty(index, delta) {
+      cart[index].quantity += delta;
+      if (cart[index].quantity <= 0) {
+        cart.splice(index, 1);
+      }
+      renderCart();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    function sendToWhatsApp() {
+      const customerName = document.getElementById("customerName").value;
+      if (!customerName) { alert("Please enter your name"); return; }
+      if (cart.length === 0) { alert("Your cart is empty"); return; }
+
+      let message = `*ABD Surgical Ordering System*\n*Order from ${customerName}*\n\n`;
+      let totalCount = 0;
+      cart.forEach(item => {
+        message += `${item.name} = ${item.quantity}\n`;
+        totalCount += item.quantity;
+      });
+      message += `\nTotal Products = ${totalCount}`;
+
+      const phoneNumber = "923214582048";
+      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank");
+    }
+
+    // Initial render
+    renderProducts();
+    brandFilter.addEventListener("change", renderProducts);
+    categoryFilter.addEventListener("change", renderProducts);
+  </script>
+</body>
+
+</html>
